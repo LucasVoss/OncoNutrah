@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+:root {
+  /* Paleta tirada do próprio bowl: fundo branco do vídeo, verdes das folhas,
+     tomate, repolho roxo e grão-de-bico como acentos */
+  --color-paper:   #FFFFFF;   /* igual ao fundo do vídeo, o canvas some na página */
+  --color-cream:   #F6F5EE;
+  --color-ink:     #17322B;   /* texto principal / fundo escuro */
+  --color-ink-soft:#4B5F58;
+  --color-leaf:    #2F7D4A;   /* destaque principal */
+  --color-lime:    #C5DE4A;
+  --color-tomato:  #D94F33;
+  --color-cabbage: #7B3F8C;
+  --color-grain:   #D9A65A;
+  --color-line:    #E2E4D9;
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-cream: var(--color-cream);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-leaf: var(--color-leaf);
+  --color-lime: var(--color-lime);
+  --color-tomato: var(--color-tomato);
+  --color-cabbage: var(--color-cabbage);
+  --color-grain: var(--color-grain);
+  --color-line: var(--color-line);
+
+  --font-display: var(--font-dm-serif);
+  --font-body: var(--font-source-serif);
+  --font-label: var(--font-plex-mono);
+}
+
+/* Sem reset "* { margin:0; padding:0 }": fora de @layer ele venceria as utilities
+   do Tailwind 4. O preflight do Tailwind já zera margens e paddings. */
+html { scroll-behavior: smooth; color-scheme: light; }
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-source-serif), Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+}
+section[id] { scroll-margin-top: 72px; }
+::selection { background: var(--color-lime); color: var(--color-ink); }
+
+/* Grain texture */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Photo fade nas bordas (para fundo creme) */
+.photo-fade { position: relative; }
+.photo-fade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, var(--color-cream) 0%, transparent 14%, transparent 86%, var(--color-cream) 100%),
+    linear-gradient(to right, var(--color-cream) 0%, transparent 14%, transparent 86%, var(--color-cream) 100%);
+  pointer-events: none;
+}
+
+/* Scroll hint bounce */
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%       { transform: translateY(6px); opacity: 1; }
+}
+.scroll-bounce { animation: scrollBounce 1.6s ease-in-out infinite; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-bounce { animation: none; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(47,125,74,0.35); border-radius: 2px; }
